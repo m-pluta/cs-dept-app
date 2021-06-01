@@ -5,6 +5,12 @@
  */
 package cse.application;
 
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 /**
  *
  * @author Michal
@@ -25,11 +31,9 @@ public class FacultyFrame extends javax.swing.JFrame {
         cbFacultyName.addItem("Nilesh Jogoo");
         cbFacultyName.addItem("Satish Bhalla");
         cbFacultyName.addItem("Black Anderson");
-        cbFacultyName.addItem("Steve Johnson");
+        cbFacultyName.addItem("Brett Freeman");
         cbFacultyName.addItem("Jenney King");
-        cbFacultyName.addItem("Alice Brown");
-        cbFacultyName.addItem("Debby Angles");
-        cbFacultyName.addItem("Jeff Henry");
+        cbFacultyName.addItem("Henry Averies");
     }
 
     /**
@@ -163,6 +167,11 @@ public class FacultyFrame extends javax.swing.JFrame {
         );
 
         btnSelect.setText("Select");
+        btnSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectActionPerformed(evt);
+            }
+        });
 
         btnInsert.setText("Insert");
 
@@ -223,6 +232,40 @@ public class FacultyFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        
+        javax.swing.JTextField[] f_field = {txtTitle, txtOffice, txtPhone, txtCollege, txtEmail};
+        
+        String query =  "SELECT title, office, phone, college, email " + "FROM Faculty WHERE faculty_name = ?";
+        if (cbQueryMethod.getSelectedItem() == "Runtime Object Method") {
+            try {
+                DatabaseMetaData dbmd = LoginFrame.conn.getMetaData();
+                String drName = dbmd.getDriverName();
+                String drVersion = dbmd.getDriverVersion();
+                msgDlg.setMessage("Driver Version is: " + drName + ", Version is: " + drVersion);
+                msgDlg.setVisible(true);
+                
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, cbFacultyName.getSelectedItem().toString());
+                ResultSet rs = pstmt.executeQuery();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                msgDlg.setMessage("Faculty Table has " + rsmd.getColumnCount() + " Columns");
+                msgDlg.setVisible(true);
+                
+                while (rs.next()) {
+                    for (int i=1; i <= rsmd.getColumnCount(); i++) {
+                        f_field[i-1].setText(rs.getString(i));
+                    }
+                }
+            
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+            }
+            
+        }
+    }//GEN-LAST:event_btnSelectActionPerformed
 
     /**
      * @param args the command line arguments
