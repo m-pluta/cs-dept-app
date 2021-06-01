@@ -4,6 +4,16 @@
  * and open the template in the editor.
  */
 package cse.application;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.*;
+import java.util.ArrayList;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -11,13 +21,62 @@ package cse.application;
  */
 public class LoginFrame extends javax.swing.JFrame {
 
+    static Connection conn = null;
+    MsgDialog msgDlg = new MsgDialog(new javax.swing.JFrame(), true);
+    
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        String workingDir = getCurrentDir();
+        ArrayList<String> authData = getAuthData(workingDir + "\\src\\Other\\authDB.json");
+        connectToDB(authData);
+         
     }
+    
+    private static String getCurrentDir() {
+        Path currentRelativePath = Paths.get("");
+        return currentRelativePath.toAbsolutePath().toString();
+    }
+    
+    private static ArrayList<String> getAuthData(String source) {
 
+        ArrayList<String> tempArray = new ArrayList<String>();
+        JSONParser parser = new JSONParser();
+
+        try {
+
+            JSONObject obj = (JSONObject) parser.parse(new FileReader(source));
+            tempArray.add((String) obj.get("url"));
+            tempArray.add((String) obj.get("username"));
+            tempArray.add((String) obj.get("password"));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return tempArray;
+    }
+    
+    private void connectToDB(ArrayList<String> authData) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(authData.get(0), authData.get(1), authData.get(2));
+        } catch (ClassNotFoundException cE) {
+            msgDlg.setMessage("Class not found exception! " + cE.getMessage());
+            msgDlg.setVisible(true);
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQL exception!" + ex.getMessage());
+            msgDlg.setVisible(true);  
+        }
+
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
