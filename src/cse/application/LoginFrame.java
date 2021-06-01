@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package cse.application;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     static Connection conn = null;
     MsgDialog msgDlg = new MsgDialog(new javax.swing.JFrame(), true);
-    
+
     /**
      * Creates new form LoginFrame
      */
@@ -33,14 +34,14 @@ public class LoginFrame extends javax.swing.JFrame {
         String workingDir = getCurrentDir();
         ArrayList<String> authData = getAuthData(workingDir + "\\src\\Other\\authDB.json");
         connectToDB(authData);
-         
+
     }
-    
+
     private static String getCurrentDir() {
         Path currentRelativePath = Paths.get("");
         return currentRelativePath.toAbsolutePath().toString();
     }
-    
+
     private static ArrayList<String> getAuthData(String source) {
 
         ArrayList<String> tempArray = new ArrayList<String>();
@@ -62,7 +63,7 @@ public class LoginFrame extends javax.swing.JFrame {
         }
         return tempArray;
     }
-    
+
     private void connectToDB(ArrayList<String> authData) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -73,11 +74,11 @@ public class LoginFrame extends javax.swing.JFrame {
             msgDlg.setVisible(true);
         } catch (SQLException ex) {
             msgDlg.setMessage("SQL exception!" + ex.getMessage());
-            msgDlg.setVisible(true);  
+            msgDlg.setVisible(true);
         }
 
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -123,6 +124,11 @@ public class LoginFrame extends javax.swing.JFrame {
 
         btnCancel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -173,51 +179,68 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
-        txtPassword.setEchoChar('•');              
+        txtPassword.setEchoChar('•');
     }//GEN-LAST:event_txtPasswordActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String ePassword = "";
         char[] passwordArray = txtPassword.getPassword();
-        
-        for (int i = 0; i < passwordArray.length; i++ ) {
+
+        for (int i = 0; i < passwordArray.length; i++) {
             ePassword += passwordArray[i];
         }
-        
+
         String username = null, password = null;
+        Boolean found = false;
         String query = "SELECT user_name, pass_word FROM login " + "WHERE user_name = ? AND pass_word = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, txtUsername.getText());
             pstmt.setString(2, ePassword);
-            
+
             ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
+            if (!rs.next()) {
+                msgDlg.setMessage("No user under these credentials was found!");
+                msgDlg.setVisible(true);
+                found = false;
+            } else {
                 username = rs.getString(1);
                 password = rs.getString(2);
-                System.out.println(username + " " + password);
+                found = true;
             }
-            
-            
+
         } catch (SQLException e) {
             msgDlg.setMessage("Error in statement! " + e.getMessage());
             msgDlg.setVisible(true);
-        
+
         }
-        if (txtUsername.getText().isEmpty() || ePassword.isEmpty()) {
-            msgDlg.setMessage("Enter login information...");
-            msgDlg.setVisible(true);
-        }
-        else if (username.equals(txtUsername.getText()) && password.equals(ePassword)) {
-            msgDlg.setMessage("Login is successful!");
-            msgDlg.setVisible(true);
-            this.setVisible(false);
-            this.dispose();
-        } else {
-            msgDlg.setMessage("Login is failed!");
-            msgDlg.setVisible(true);
+        if (found) {
+            if (txtUsername.getText().isEmpty() || ePassword.isEmpty()) {
+                msgDlg.setMessage("Enter login information...");
+                msgDlg.setVisible(true);
+            } else if (username.equals(txtUsername.getText()) && password.equals(ePassword)) {
+                msgDlg.setMessage("Login is successful!");
+                msgDlg.setVisible(true);
+                this.setVisible(false);
+                this.dispose();
+            } else {
+                msgDlg.setMessage("Login is failed!");
+                msgDlg.setVisible(true);
+            }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        this.setVisible(false);
+        this.dispose();
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            msgDlg.setMessage("Could not close! " + e.getMessage());
+            msgDlg.setVisible(true);
+        }
+        System.exit(0);
+    }//GEN-LAST:event_btnCancelActionPerformed
 
     /**
      * @param args the command line arguments
