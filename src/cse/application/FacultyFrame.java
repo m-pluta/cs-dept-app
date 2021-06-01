@@ -182,6 +182,11 @@ public class FacultyFrame extends javax.swing.JFrame {
         btnDelete.setText("Delete");
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         ImageCanvas.setPreferredSize(new java.awt.Dimension(100, 100));
 
@@ -290,6 +295,11 @@ public class FacultyFrame extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnSelectActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     private boolean ShowFaculty() {
         Image img;

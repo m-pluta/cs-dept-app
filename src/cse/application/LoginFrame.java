@@ -220,7 +220,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 msgDlg.setVisible(true);
             } else if (username.equals(txtUsername.getText()) && password.equals(ePassword)) {
                 SelectionFrame selFrame = new SelectionFrame().getSelectionFrame();
-                selFrame.setVisible(true);              
+                selFrame.setVisible(true);
 //                msgDlg.setMessage("Login is successful!");
 //                msgDlg.setVisible(true);
                 this.setVisible(false);

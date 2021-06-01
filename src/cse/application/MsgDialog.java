@@ -29,8 +29,6 @@ public class MsgDialog extends javax.swing.JDialog {
         } else {
             String out = "<html> ";
             int nLines = msgLength / lineLength;
-            System.out.println(nLines);
-            System.out.println(msgLength);
             for (int i = 0; i < nLines; i++) {
                 out += msg.substring(i * lineLength, (i + 1) * lineLength - 1) + "<br>";
             }
