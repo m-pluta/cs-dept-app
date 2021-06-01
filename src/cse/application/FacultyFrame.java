@@ -5,6 +5,9 @@
  */
 package cse.application;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -242,7 +245,7 @@ public class FacultyFrame extends javax.swing.JFrame {
                 DatabaseMetaData dbmd = LoginFrame.conn.getMetaData();
                 String drName = dbmd.getDriverName();
                 String drVersion = dbmd.getDriverVersion();
-                msgDlg.setMessage("Driver Version is: " + drName + ", Version is: " + drVersion);
+                msgDlg.setMessage("DriverName is: " + drName + ", Version is: " + drVersion);
                 msgDlg.setVisible(true);
 
                 PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
@@ -258,6 +261,11 @@ public class FacultyFrame extends javax.swing.JFrame {
                     }
                 }
 
+                if (!ShowFaculty()) {
+                    msgDlg.setMessage("No matched faculty image found!");
+                    msgDlg.setVisible(true);
+                }
+                
             } catch (SQLException e) {
                 msgDlg.setMessage("Error in statement! " + e.getMessage());
                 msgDlg.setVisible(true);
@@ -282,6 +290,44 @@ public class FacultyFrame extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnSelectActionPerformed
+
+    private boolean ShowFaculty() {
+        Image img;
+        int imgId = 1, maxNumber = 5, timeout = 1000;
+        MediaTracker tracker = new MediaTracker(this);
+
+        String fImage = null;
+        String[] fname = {"Nilesh Jogoo", "Satish Bhalla", "Black Anderson", "Brett Freeman", "Jenney King", "Henry Averies"};
+
+        String[] fimage = {"Jogoo.jpg", "Bhalla.jpg", "Anderson.jpg", "Freeman.jpg", "King.jpg", "Averies.jpg"};
+
+        for (int i = 0; i <= maxNumber; i++) {
+            if (fname[i].equals((String) cbFacultyName.getSelectedItem())) {
+                fImage = fimage[i];
+                break;
+            }
+        }
+        if (fImage != null) {
+            img = this.getToolkit().getImage(fImage);
+            Graphics g = ImageCanvas.getGraphics();
+            tracker.addImage(img, imgId);
+            try {
+                if (!tracker.waitForID(imgId, timeout)) {
+                    msgDlg.setMessage("Faled to load image!");
+                    msgDlg.setVisible(true);
+                }
+            } catch (InterruptedException e) {
+                msgDlg.setMessage(e.toString());
+                msgDlg.setVisible(true);
+            }
+            g.drawImage(img, 0, 0, ImageCanvas.getWidth(), ImageCanvas.getHeight(), this);
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
 
     /**
      * @param args the command line arguments
