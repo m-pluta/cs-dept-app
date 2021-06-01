@@ -18,8 +18,7 @@ import java.sql.SQLException;
 public class FacultyFrame extends javax.swing.JFrame {
 
     MsgDialog msgDlg = new MsgDialog(new javax.swing.JFrame(), true);
-    
-    
+
     /**
      * Creates new form FacultyFrame
      */
@@ -234,10 +233,10 @@ public class FacultyFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
-        
+
         javax.swing.JTextField[] f_field = {txtTitle, txtOffice, txtPhone, txtCollege, txtEmail};
-        
-        String query =  "SELECT title, office, phone, college, email " + "FROM Faculty WHERE faculty_name = ?";
+
+        String query = "SELECT title, office, phone, college, email " + "FROM Faculty WHERE faculty_name = ?";
         if (cbQueryMethod.getSelectedItem() == "Runtime Object Method") {
             try {
                 DatabaseMetaData dbmd = LoginFrame.conn.getMetaData();
@@ -245,25 +244,42 @@ public class FacultyFrame extends javax.swing.JFrame {
                 String drVersion = dbmd.getDriverVersion();
                 msgDlg.setMessage("Driver Version is: " + drName + ", Version is: " + drVersion);
                 msgDlg.setVisible(true);
-                
+
                 PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
                 pstmt.setString(1, cbFacultyName.getSelectedItem().toString());
                 ResultSet rs = pstmt.executeQuery();
                 ResultSetMetaData rsmd = rs.getMetaData();
                 msgDlg.setMessage("Faculty Table has " + rsmd.getColumnCount() + " Columns");
                 msgDlg.setVisible(true);
-                
+
                 while (rs.next()) {
-                    for (int i=1; i <= rsmd.getColumnCount(); i++) {
-                        f_field[i-1].setText(rs.getString(i));
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        f_field[i - 1].setText(rs.getString(i));
                     }
                 }
-            
+
             } catch (SQLException e) {
                 msgDlg.setMessage("Error in statement! " + e.getMessage());
                 msgDlg.setVisible(true);
             }
-            
+
+        } else if (cbQueryMethod.getSelectedItem() == "Java execute() Method") {
+            try {
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, cbFacultyName.getSelectedItem().toString());
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    for (int i = 1; i <= 5; i++) {
+                        f_field[i - 1].setText(rs.getString(i));
+                    }
+                }
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+
+            }
+
         }
     }//GEN-LAST:event_btnSelectActionPerformed
 

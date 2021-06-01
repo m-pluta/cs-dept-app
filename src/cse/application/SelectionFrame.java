@@ -124,9 +124,6 @@ public class SelectionFrame extends javax.swing.JFrame {
         this.dispose();
         System.exit(0);
         
-        
-        
-        
     }//GEN-LAST:event_btnExitActionPerformed
 
     public SelectionFrame getSelectionFrame() {
