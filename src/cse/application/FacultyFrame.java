@@ -11,11 +11,25 @@ package cse.application;
  */
 public class FacultyFrame extends javax.swing.JFrame {
 
+    MsgDialog msgDlg = new MsgDialog(new javax.swing.JFrame(), true);
+    
+    
     /**
      * Creates new form FacultyFrame
      */
     public FacultyFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        cbQueryMethod.addItem("Runtime Object Method");
+        cbQueryMethod.addItem("Java execute() Method");
+        cbFacultyName.addItem("Nilesh Jogoo");
+        cbFacultyName.addItem("Satish Bhalla");
+        cbFacultyName.addItem("Black Anderson");
+        cbFacultyName.addItem("Steve Johnson");
+        cbFacultyName.addItem("Jenney King");
+        cbFacultyName.addItem("Alice Brown");
+        cbFacultyName.addItem("Debby Angles");
+        cbFacultyName.addItem("Jeff Henry");
     }
 
     /**
