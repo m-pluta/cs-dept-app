@@ -1,0 +1,4 @@
+/build/
+
+# Database permissions
+/src/Other/authDB.json
