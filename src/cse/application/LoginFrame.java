@@ -67,6 +67,7 @@ public class LoginFrame extends javax.swing.JFrame {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(authData.get(0), authData.get(1), authData.get(2));
+            // conn.close();
         } catch (ClassNotFoundException cE) {
             msgDlg.setMessage("Class not found exception! " + cE.getMessage());
             msgDlg.setVisible(true);
@@ -105,8 +106,20 @@ public class LoginFrame extends javax.swing.JFrame {
 
         lblPassword.setText("Password");
 
+        txtPassword.setEchoChar('•');
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
+
         btnLogin.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         btnCancel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         btnCancel.setText("Cancel");
@@ -158,6 +171,53 @@ public class LoginFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        txtPassword.setEchoChar('•');              
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        String ePassword = "";
+        char[] passwordArray = txtPassword.getPassword();
+        
+        for (int i = 0; i < passwordArray.length; i++ ) {
+            ePassword += passwordArray[i];
+        }
+        
+        String username = null, password = null;
+        String query = "SELECT user_name, pass_word FROM login " + "WHERE user_name = ? AND pass_word = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, txtUsername.getText());
+            pstmt.setString(2, ePassword);
+            
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                username = rs.getString(1);
+                password = rs.getString(2);
+                System.out.println(username + " " + password);
+            }
+            
+            
+        } catch (SQLException e) {
+            msgDlg.setMessage("Error in statement! " + e.getMessage());
+            msgDlg.setVisible(true);
+        
+        }
+        if (txtUsername.getText().isEmpty() || ePassword.isEmpty()) {
+            msgDlg.setMessage("Enter login information...");
+            msgDlg.setVisible(true);
+        }
+        else if (username.equals(txtUsername.getText()) && password.equals(ePassword)) {
+            msgDlg.setMessage("Login is successful!");
+            msgDlg.setVisible(true);
+            this.setVisible(false);
+            this.dispose();
+        } else {
+            msgDlg.setMessage("Login is failed!");
+            msgDlg.setVisible(true);
+        }
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
