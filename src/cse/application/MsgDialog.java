@@ -21,9 +21,26 @@ public class MsgDialog extends javax.swing.JDialog {
     }
 
     public void setMessage(String msg) {
-        MsgLabel.setText(msg);
+        int lineLength = 120;
+        int msgLength = msg.length();
+
+        if (msgLength <= lineLength) {
+            MsgLabel.setText(msg);
+        } else {
+            String out = "<html> ";
+            int nLines = msgLength / lineLength;
+            System.out.println(nLines);
+            System.out.println(msgLength);
+            for (int i = 0; i < nLines; i++) {
+                out += msg.substring(i * lineLength, (i + 1) * lineLength - 1) + "<br>";
+            }
+            out += msg.substring(nLines * lineLength);
+
+            MsgLabel.setText(out);
+
+        }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,16 +62,16 @@ public class MsgDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(15, 15, 15)
                 .addComponent(MsgLabel)
-                .addContainerGap(439, Short.MAX_VALUE))
+                .addContainerGap(261, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(MsgLabel)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         pack();
