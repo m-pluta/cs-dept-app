@@ -370,8 +370,8 @@ public class FacultyFrame extends javax.swing.JFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         String query = "DELETE FROM Faculty WHERE faculty_name = '" + cbFacultyName.getSelectedItem() + "'";
         Statement stmt = null;
-
         int rowsAffected = 0;
+
         try {
             stmt = LoginFrame.conn.createStatement();
             rowsAffected = stmt.executeUpdate(query);
@@ -380,9 +380,20 @@ public class FacultyFrame extends javax.swing.JFrame {
         } catch (SQLException ex) {
             msgDlg.setMessage("SQLException " + ex.getMessage());
         }
+        if (rowsAffected > 0) {
+            updateFaculties();
+            clearTXTs();
+        }
 
-        updateFaculties();
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void clearTXTs() {
+        txtTitle.setText("");
+        txtOffice.setText("");
+        txtPhone.setText("");
+        txtCollege.setText("");
+        txtEmail.setText("");
+    }
 
     private boolean ShowFaculty() {
         Image img;
