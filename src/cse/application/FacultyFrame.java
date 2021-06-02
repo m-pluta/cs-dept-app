@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -28,14 +29,15 @@ public class FacultyFrame extends javax.swing.JFrame {
     public FacultyFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
+        addFaculties();
         cbQueryMethod.addItem("Runtime Object Method");
         cbQueryMethod.addItem("Java execute() Method");
-        cbFacultyName.addItem("Nilesh Jogoo");
-        cbFacultyName.addItem("Satish Bhalla");
-        cbFacultyName.addItem("Black Anderson");
-        cbFacultyName.addItem("Brett Freeman");
-        cbFacultyName.addItem("Jenney King");
-        cbFacultyName.addItem("Henry Averies");
+//        cbFacultyName.addItem("Nilesh Jogoo");
+//        cbFacultyName.addItem("Satish Bhalla");
+//        cbFacultyName.addItem("Black Anderson");
+//        cbFacultyName.addItem("Brett Freeman");
+//        cbFacultyName.addItem("Jenney King");
+//        cbFacultyName.addItem("Henry Averies");
     }
 
     /**
@@ -240,6 +242,26 @@ public class FacultyFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addFaculties() {
+        String query = "SELECT faculty_name from Faculty";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = LoginFrame.conn.createStatement();
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                cbFacultyName.addItem(rs.getString(1));
+            }
+
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQLException " + ex.getMessage());
+        }
+
+    }
+
+
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
 
         javax.swing.JTextField[] f_field = {txtTitle, txtOffice, txtPhone, txtCollege, txtEmail};
@@ -270,7 +292,7 @@ public class FacultyFrame extends javax.swing.JFrame {
                     msgDlg.setMessage("No matched faculty image found!");
                     msgDlg.setVisible(true);
                 }
-                
+
             } catch (SQLException e) {
                 msgDlg.setMessage("Error in statement! " + e.getMessage());
                 msgDlg.setVisible(true);
