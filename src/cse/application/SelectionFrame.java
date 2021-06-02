@@ -98,15 +98,16 @@ public class SelectionFrame extends javax.swing.JFrame {
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
         FacultyFrame facultyFrame = new FacultyFrame();
-//        CourseFrame courseFrame = new CourseFrame();     
+        CourseFrame courseFrame = new CourseFrame();     
         
         if (cbSelection.getSelectedItem() == "Faculty Information") {
             facultyFrame.setVisible(true); 
             this.setVisible(false);
         } else if (cbSelection.getSelectedItem() == "Course Information") {
-//            courseFrame.setVisible(true); 
+            courseFrame.setVisible(true); 
+            this.setVisible(false);
         } else {
-            dialog.setMessage("Student Information is selected");
+            dialog.setMessage("This part of the program does not exist.");
             dialog.setVisible(true);
         }     
     }//GEN-LAST:event_btnOkActionPerformed
