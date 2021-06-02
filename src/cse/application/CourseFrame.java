@@ -66,7 +66,53 @@ public class CourseFrame extends javax.swing.JFrame {
     }
     
     private void loadCourseDetails(){
-        
+        javax.swing.JTextField[] f_field = {txtCourse, txtSchedule, txtClassroom, txtCredits, txtEnrolment};
+
+        String query = "SELECT course_name, schedule, classroom, credits, enrolment " + "FROM Courses WHERE course_id = ?";
+        if (cbQuery.getSelectedItem() == "Runtime Object Method") {
+            try {
+                DatabaseMetaData dbmd = LoginFrame.conn.getMetaData();
+                String drName = dbmd.getDriverName();
+                String drVersion = dbmd.getDriverVersion();
+                msgDlg.setMessage("DriverName is: " + drName + ", Version is: " + drVersion);
+                msgDlg.setVisible(true);
+
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, lsCourses.getSelectedValue());
+                ResultSet rs = pstmt.executeQuery();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                msgDlg.setMessage("Faculty Table has " + rsmd.getColumnCount() + " Columns");
+                msgDlg.setVisible(true);
+
+                while (rs.next()) {
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        f_field[i - 1].setText(rs.getString(i));
+                    }
+                }
+
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+            }
+
+        } else if (cbQuery.getSelectedItem() == "Java execute() Method") {
+            try {
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, lsCourses.getSelectedValue());
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    for (int i = 1; i <= 5; i++) {
+                        f_field[i - 1].setText(rs.getString(i));
+                    }
+                }
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+
+            }
+
+        }
         
     }
 
@@ -94,10 +140,10 @@ public class CourseFrame extends javax.swing.JFrame {
         lblCredits = new javax.swing.JLabel();
         lblEnrolment = new javax.swing.JLabel();
         txtCourse = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        txtSchedule = new javax.swing.JTextField();
+        txtClassroom = new javax.swing.JTextField();
+        txtCredits = new javax.swing.JTextField();
+        txtEnrolment = new javax.swing.JTextField();
         btnSelect = new javax.swing.JButton();
         btnInsert = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
@@ -185,16 +231,16 @@ public class CourseFrame extends javax.swing.JFrame {
                     .addGroup(pCourseDetailsLayout.createSequentialGroup()
                         .addComponent(lblSchedule)
                         .addGap(27, 27, 27)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pCourseDetailsLayout.createSequentialGroup()
                         .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblClassroom)
                             .addComponent(lblCredits))
                         .addGap(18, 18, 18)
                         .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField5)))
+                            .addComponent(txtClassroom)
+                            .addComponent(txtCredits)
+                            .addComponent(txtEnrolment)))
                     .addGroup(pCourseDetailsLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(lblCourse)
@@ -212,19 +258,19 @@ public class CourseFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSchedule)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblClassroom)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtClassroom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCredits)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCredits, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pCourseDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEnrolment)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEnrolment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
@@ -294,7 +340,6 @@ public class CourseFrame extends javax.swing.JFrame {
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
 
         String faculty_email = fetchFacultyEmail();
-        System.out.println(faculty_email);
 
         DefaultListModel model = new DefaultListModel();
         lsCourses.setModel(model);
@@ -348,7 +393,6 @@ public class CourseFrame extends javax.swing.JFrame {
     private String fetchFacultyEmail() {
         String out = "";
         String query = "SELECT email " + "FROM Faculty WHERE faculty_name = ?";
-        System.out.println(query);
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -411,10 +455,6 @@ public class CourseFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbFaculty;
     private javax.swing.JComboBox<String> cbQuery;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JLabel lblClassroom;
     private javax.swing.JLabel lblCourse;
     private javax.swing.JLabel lblCredits;
@@ -426,6 +466,10 @@ public class CourseFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pCourse;
     private javax.swing.JPanel pCourseDetails;
     private javax.swing.JPanel pFaculty;
+    private javax.swing.JTextField txtClassroom;
     private javax.swing.JTextField txtCourse;
+    private javax.swing.JTextField txtCredits;
+    private javax.swing.JTextField txtEnrolment;
+    private javax.swing.JTextField txtSchedule;
     // End of variables declaration//GEN-END:variables
 }
