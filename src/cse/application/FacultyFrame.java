@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -358,13 +359,48 @@ public class FacultyFrame extends javax.swing.JFrame {
             msgDlg.setVisible(true);
         } catch (SQLException ex) {
             msgDlg.setMessage("SQLException " + ex.getMessage());
+            msgDlg.setVisible(true);
         }
 
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-        // TODO add your handling code here:
-        String strSQL = "INSERT INTO tblPizza (PizzaType, Toppings, Cost, SpecialInfo) VALUES (?,?,?,?)";
+        String faculty = "";
+        javax.swing.JTextField[] txt_field = {txtTitle, txtOffice, txtPhone, txtCollege, txtEmail};
+
+        Boolean valid = true;
+        for (javax.swing.JTextField field : txt_field) {
+            if (field.getText().equals("")) {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid) {
+            msgDlg.setMessage("Some of the fields required are empty");
+            msgDlg.setVisible(true);
+        } else {
+            String query = "INSERT INTO Faculty (faculty_name, title, office, phone, college, email) VALUES (?,?,?,?,?,?)";
+            PreparedStatement pstmt = null;
+            int rowsAffected = 0;
+
+            faculty = JOptionPane.showInputDialog("What faculty is this?");
+            try {
+                pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, faculty);
+                for (int i = 0; i <= 4; i++) {
+                    pstmt.setString(i+2, txt_field[i].getText());
+                }
+                rowsAffected = pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                msgDlg.setMessage("SQLException " + ex.getMessage());
+                msgDlg.setVisible(true);
+            }
+            if (rowsAffected > 0) {
+                clearTXTs();
+                updateFaculties();
+            }
+
+        }
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
