@@ -178,10 +178,25 @@ public class FacultyFrame extends javax.swing.JFrame {
         });
 
         btnInsert.setText("Insert");
+        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertActionPerformed(evt);
+            }
+        });
 
         btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -322,6 +337,36 @@ public class FacultyFrame extends javax.swing.JFrame {
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        String query = "UPDATE Faculty " + "SET title = ?, office = ?, phone = ?, college = ?, email = ?" + " WHERE faculty_name = '" + cbFacultyName.getSelectedItem() + "'";
+
+        PreparedStatement pstmt = null;
+        int rowsAffected = 0;
+
+        try {
+            pstmt = LoginFrame.conn.prepareStatement(query);
+            pstmt.setString(1, txtTitle.getText());
+            pstmt.setString(2, txtOffice.getText());
+            pstmt.setString(3, txtPhone.getText());
+            pstmt.setString(4, txtCollege.getText());
+            pstmt.setString(5, txtEmail.getText());
+            rowsAffected = pstmt.executeUpdate();
+            msgDlg.setMessage(rowsAffected + " rows affected.");
+            msgDlg.setVisible(true);
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQLException " + ex.getMessage());
+        }
+
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnInsertActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private boolean ShowFaculty() {
         Image img;
