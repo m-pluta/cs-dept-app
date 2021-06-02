@@ -29,7 +29,7 @@ public class FacultyFrame extends javax.swing.JFrame {
     public FacultyFrame() {
         initComponents();
         this.setLocationRelativeTo(null);
-        addFaculties();
+        updateFaculties();
         cbQueryMethod.addItem("Runtime Object Method");
         cbQueryMethod.addItem("Java execute() Method");
 //        cbFacultyName.addItem("Nilesh Jogoo");
@@ -257,9 +257,9 @@ public class FacultyFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addFaculties() {
+    private void updateFaculties() {
         cbFacultyName.removeAllItems();
-        
+
         String query = "SELECT faculty_name from Faculty";
         Statement stmt = null;
         ResultSet rs = null;
@@ -364,11 +364,24 @@ public class FacultyFrame extends javax.swing.JFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         // TODO add your handling code here:
-         String strSQL = "INSERT INTO tblPizza (PizzaType, Toppings, Cost, SpecialInfo) VALUES (?,?,?,?)";
+        String strSQL = "INSERT INTO tblPizza (PizzaType, Toppings, Cost, SpecialInfo) VALUES (?,?,?,?)";
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        String query = "DELETE FROM Faculty WHERE faculty_name = '" + cbFacultyName.getSelectedItem() + "'";
+        Statement stmt = null;
+
+        int rowsAffected = 0;
+        try {
+            stmt = LoginFrame.conn.createStatement();
+            rowsAffected = stmt.executeUpdate(query);
+            msgDlg.setMessage(rowsAffected + " rows affected.");
+            msgDlg.setVisible(true);
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQLException " + ex.getMessage());
+        }
+
+        updateFaculties();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private boolean ShowFaculty() {
