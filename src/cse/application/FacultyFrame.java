@@ -258,6 +258,8 @@ public class FacultyFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addFaculties() {
+        cbFacultyName.removeAllItems();
+        
         String query = "SELECT faculty_name from Faculty";
         Statement stmt = null;
         ResultSet rs = null;
@@ -362,6 +364,7 @@ public class FacultyFrame extends javax.swing.JFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         // TODO add your handling code here:
+         String strSQL = "INSERT INTO tblPizza (PizzaType, Toppings, Cost, SpecialInfo) VALUES (?,?,?,?)";
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
