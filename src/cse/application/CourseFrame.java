@@ -221,6 +221,11 @@ public class CourseFrame extends javax.swing.JFrame {
         btnInsert.setText("Insert");
 
         btnBack.setText("Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -319,6 +324,11 @@ public class CourseFrame extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnSelectActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     private String fetchFacultyEmail() {
         String out = "";
