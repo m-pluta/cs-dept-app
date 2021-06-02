@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -290,6 +291,11 @@ public class CourseFrame extends javax.swing.JFrame {
         });
 
         btnInsert.setText("Insert");
+        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -398,6 +404,36 @@ public class CourseFrame extends javax.swing.JFrame {
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
+        javax.swing.JTextField[] txt_field = {txtCourse, txtSchedule, txtClassroom, txtCredits, txtEnrolment};
+        String faculty_email = fetchFacultyEmail();
+
+        String query = "INSERT INTO Courses (faculty, course_id, course_name, schedule, classroom, credits, enrolment) VALUES (?,?,?,?,?,?,?)";
+        PreparedStatement pstmt = null;
+        int rowsAffected = 0;
+        String course_id = "";
+        course_id = JOptionPane.showInputDialog("What id of course is this?");
+        try {
+            pstmt = LoginFrame.conn.prepareStatement(query);
+            pstmt.setString(1, faculty_email);
+            pstmt.setString(2, course_id);
+            
+            
+            for (int i = 0; i <= 4; i++) {
+                pstmt.setString(i + 3, txt_field[i].getText());
+                System.out.println(txt_field[i].getText());
+            }
+            System.out.println(pstmt.toString());
+            rowsAffected = pstmt.executeUpdate();
+            msgDlg.setMessage(rowsAffected + " rows affected.");
+            msgDlg.setVisible(true);
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQLException " + ex.getMessage());
+            msgDlg.setVisible(true);
+        }
+
+    }//GEN-LAST:event_btnInsertActionPerformed
 
     private String fetchFacultyEmail() {
         String out = "";
