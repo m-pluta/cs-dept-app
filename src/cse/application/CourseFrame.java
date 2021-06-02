@@ -44,6 +44,14 @@ public class CourseFrame extends javax.swing.JFrame {
 
     }
 
+    private void clearTXTs() {
+        txtCourse.setText("");
+        txtSchedule.setText("");
+        txtClassroom.setText("");
+        txtCredits.setText("");
+        txtEnrolment.setText("");
+    }
+
     private void updateFaculties() {
         cbFaculty.removeAllItems();
 
@@ -64,8 +72,8 @@ public class CourseFrame extends javax.swing.JFrame {
         }
 
     }
-    
-    private void loadCourseDetails(){
+
+    private void loadCourseDetails() {
         javax.swing.JTextField[] f_field = {txtCourse, txtSchedule, txtClassroom, txtCredits, txtEnrolment};
 
         String query = "SELECT course_name, schedule, classroom, credits, enrolment " + "FROM Courses WHERE course_id = ?";
@@ -113,7 +121,7 @@ public class CourseFrame extends javax.swing.JFrame {
             }
 
         }
-        
+
     }
 
     /**
@@ -339,6 +347,7 @@ public class CourseFrame extends javax.swing.JFrame {
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
 
+        clearTXTs();
         String faculty_email = fetchFacultyEmail();
 
         DefaultListModel model = new DefaultListModel();
