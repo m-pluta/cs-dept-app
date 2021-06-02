@@ -5,9 +5,13 @@
  */
 package cse.application;
 
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -266,8 +270,79 @@ public class CourseFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
-        // TODO add your handling code here:
+
+        String faculty_email = fetchFacultyEmail();
+        System.out.println(faculty_email);
+
+        DefaultListModel model = new DefaultListModel();
+        lsCourses.setModel(model);
+
+        String query = "SELECT faculty, course_id, course_name, schedule, classroom, credits, enrolment " + "FROM Courses WHERE faculty = ?";
+        if (cbQuery.getSelectedItem() == "Runtime Object Method") {
+            try {
+                DatabaseMetaData dbmd = LoginFrame.conn.getMetaData();
+                String drName = dbmd.getDriverName();
+                String drVersion = dbmd.getDriverVersion();
+                msgDlg.setMessage("DriverName is: " + drName + ", Version is: " + drVersion);
+                msgDlg.setVisible(true);
+
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, faculty_email);
+                ResultSet rs = pstmt.executeQuery();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                msgDlg.setMessage("Faculty Table has " + rsmd.getColumnCount() + " Columns");
+                msgDlg.setVisible(true);
+
+                while (rs.next()) {
+                    model.addElement(rs.getString(2));
+                }
+
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+            }
+
+        } else if (cbQuery.getSelectedItem() == "Java execute() Method") {
+            try {
+                PreparedStatement pstmt = LoginFrame.conn.prepareStatement(query);
+                pstmt.setString(1, faculty_email);
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    model.addElement(rs.getString(2));
+                }
+            } catch (SQLException e) {
+                msgDlg.setMessage("Error in statement! " + e.getMessage());
+                msgDlg.setVisible(true);
+
+            }
+
+        }
     }//GEN-LAST:event_btnSelectActionPerformed
+
+    private String fetchFacultyEmail() {
+        String out = "";
+        String query = "SELECT email " + "FROM Faculty WHERE faculty_name = ?";
+        System.out.println(query);
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            pstmt = LoginFrame.conn.prepareStatement(query);
+            pstmt.setString(1, (String) cbFaculty.getSelectedItem());
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                out += rs.getString(1);
+                break;
+            }
+        } catch (SQLException ex) {
+            msgDlg.setMessage("Error in statement! " + ex.getMessage());
+            msgDlg.setVisible(true);
+        }
+
+        return out;
+    }
 
     /**
      * @param args the command line arguments
