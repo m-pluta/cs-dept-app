@@ -5,17 +5,48 @@
  */
 package cse.application;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author Michal
  */
 public class CourseFrame extends javax.swing.JFrame {
 
+    MsgDialog msgDlg = new MsgDialog(new javax.swing.JFrame(), true);
+
     /**
      * Creates new form CourseFrame
      */
     public CourseFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        updateFaculties();
+        cbQuery.addItem("Runtime Object Method");
+        cbQuery.addItem("Java execute() Method");
+    }
+
+    private void updateFaculties() {
+        cbFaculty.removeAllItems();
+
+        String query = "SELECT faculty_name from Faculty";
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = LoginFrame.conn.createStatement();
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                cbFaculty.addItem(rs.getString(1));
+            }
+
+        } catch (SQLException ex) {
+            msgDlg.setMessage("SQLException " + ex.getMessage());
+        }
+
     }
 
     /**
@@ -97,10 +128,10 @@ public class CourseFrame extends javax.swing.JFrame {
         pCourse.setLayout(pCourseLayout);
         pCourseLayout.setHorizontalGroup(
             pCourseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pCourseLayout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+            .addGroup(pCourseLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pCourseLayout.setVerticalGroup(
             pCourseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,6 +208,11 @@ public class CourseFrame extends javax.swing.JFrame {
         );
 
         btnSelect.setText("Select");
+        btnSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectActionPerformed(evt);
+            }
+        });
 
         btnInsert.setText("Insert");
 
@@ -198,7 +234,7 @@ public class CourseFrame extends javax.swing.JFrame {
                             .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pCourse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49)
+                        .addGap(32, 32, 32)
                         .addComponent(pCourseDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -228,6 +264,10 @@ public class CourseFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSelectActionPerformed
 
     /**
      * @param args the command line arguments
