@@ -12,6 +12,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -30,6 +32,16 @@ public class CourseFrame extends javax.swing.JFrame {
         updateFaculties();
         cbQuery.addItem("Runtime Object Method");
         cbQuery.addItem("Java execute() Method");
+
+        lsCourses.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                    loadCourseDetails();
+                }
+            }
+        });
+
     }
 
     private void updateFaculties() {
@@ -51,6 +63,11 @@ public class CourseFrame extends javax.swing.JFrame {
             msgDlg.setMessage("SQLException " + ex.getMessage());
         }
 
+    }
+    
+    private void loadCourseDetails(){
+        
+        
     }
 
     /**
@@ -319,9 +336,7 @@ public class CourseFrame extends javax.swing.JFrame {
             } catch (SQLException e) {
                 msgDlg.setMessage("Error in statement! " + e.getMessage());
                 msgDlg.setVisible(true);
-
             }
-
         }
     }//GEN-LAST:event_btnSelectActionPerformed
 
